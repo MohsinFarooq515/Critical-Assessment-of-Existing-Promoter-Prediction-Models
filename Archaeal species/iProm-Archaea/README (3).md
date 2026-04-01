@@ -1,0 +1,10 @@
+**Data Processing and Sequence Preparation**
+
+The independent Archaea promoter sequences dataset was systematically processed and prepared to match the input requirements of the pre-trained CNN model. Initially, all sequences were loaded from the FASTA file format using BioPython's SeqIO parser, which extracted the DNA sequences along with their identifiers. The raw nucleotide sequences were then subjected to one-hot encoding, a standard preprocessing technique in bioinformatics, where each DNA base (Adenine, Cytosine, Guanine, Thymine) was converted into a unique four-dimensional binary vector representation: A=[1,0,0,0], C=[0,1,0,0], G=[0,0,1,0], T=[0,0,0,1]. Unknown or ambiguous bases were assigned a default zero vector to handle edge cases. After encoding, all sequences were padded to a uniform length of 100 positions using zero padding to ensure uniform input dimensions across the dataset. This is crucial for batch processing in neural networks, as the CNN model expects fixed-size inputs. The final preprocessed data was reshaped from its raw form (number_of_sequences × 400 features from 100 bases × 4 one-hot dimensions) to the model-compatible format of (number_of_sequences × 100 × 1), representing 100 sequence positions with a single channel dimension as expected by the Conv1D layers.
+
+**Model performance over the independent dataset**
+
+The classification report indicates that the model correctly predicted 43.64% of sequences as promoters, with a high precision (1.00) for promoters but a low recall (0.44), resulting in a moderate f1-score of 0.61.
+
+The low accuracy and low recall, despite the precision being 1.00, likely indicate a class imbalance problem. The model may have heavily favored predicting promoters (class 1), leading to an overestimation of precision (since it correctly identifies promoters) but failing to capture non-promoters (class 0). This results in a recall of 0.44 for promoters, meaning the model misses many true positive promoter sequences.
+
